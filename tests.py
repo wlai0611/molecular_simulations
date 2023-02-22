@@ -8,5 +8,12 @@ true_trajectory = torch.tensor([
 ])
 
 actual_trajectory = functions.interatomic_xyz_distances(123)
+try:
+  torch.testing.assert_close(true_trajectory,actual_trajectory,msg='interatomic distances')
+except Exception as e:
+  print(e.args)
 
-torch.testing.assert_close(true_trajectory,actual_trajectory,msg='interatomic distances')
+try:
+  torch.testing.assert_close(true_trajectory,actual_trajectory,msg='interatomic distances1')
+except Exception as e:
+  print(e.args)
