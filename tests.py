@@ -14,6 +14,6 @@ except Exception as e:
   print(e.args)
 
 try:
-  torch.testing.assert_close(true_trajectory,actual_trajectory,msg='interatomic distances1')
-except Exception as e:
-  print(e.args)
+  torch.testing.assert_close(true_trajectory,actual_trajectory)
+except:
+  print('interatomic distances function broke')
