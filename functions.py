@@ -14,4 +14,11 @@ def interatomic_xyz_forces(xyz_distances):
     rows, columns = squared_euclidean_distances.shape
     gradients = gradient_return(r_t=squared_euclidean_distances+torch.eye(rows,rows),epsilon=1,sigma_t=1) #adding torch.eye avoids division by 0
     gradients = gradients - torch.diag(torch.diag(gradients))                     #make the diagonal 0s again
-    return torch.sum(xyz_distances * torch.reshape(gradients,shape=(rows,columns,1)),dim=0)    
+    return torch.sum(xyz_distances * torch.reshape(gradients,shape=(rows,columns,1)),dim=0)
+    
+def save_trajectory(positions, trajectory_file):
+    m,n        = positions.shape
+    outstring  = str(m)+"\n\n"
+    for coordinates in positions:
+      outstring += "LJ "+" ".join([str(coordinate.item()) for coordinate in coordinates])+"\n"
+    trajectory_file.write(outstring)
