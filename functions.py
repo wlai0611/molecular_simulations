@@ -15,6 +15,13 @@ def interatomic_xyz_forces(xyz_distances):
     gradients = gradient_return(r_t=squared_euclidean_distances+torch.eye(rows,rows),epsilon=1,sigma_t=1) #adding torch.eye avoids division by 0
     gradients = gradients - torch.diag(torch.diag(gradients))                     #make the diagonal 0s again
     return torch.sum(xyz_distances * torch.reshape(gradients,shape=(rows,columns,1)),dim=0)
+
+def get_delta_velocity(forces, masses, delta_time):
+    '''
+    a = F/m = dv/dt
+    dv = a * dt
+    '''
+    return torch.matmul(torch.diag(1/masses), forces) * delta_time/2
     
 def save_trajectory(positions, trajectory_file):
     m,n        = positions.shape

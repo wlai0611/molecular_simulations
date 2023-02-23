@@ -1,5 +1,6 @@
 import torch
 import functions
+import pickle
 #import pdb;pdb.set_trace()
 
 coordinates = torch.tensor([
@@ -44,3 +45,25 @@ try:
 except:
   print('force calculation function wrong')
   print(observed_forces)
+
+pickle.dump(observed_forces, open("forces.pickle",'wb'))
+
+masses = torch.tensor([1,1,1])
+observed_delta_velocity = functions.get_delta_velocity(forces=observed_forces, masses=masses, delta_time=0.001)
+try:
+  actual_delta_velocity = torch.tensor(
+  [[-1.46795825e-03, -2.24405332e-04,  1.44209151e-03],
+  [ 1.60152952e-03, -1.31081245e-03, -5.91763254e-05],
+  [-1.33571269e-04,  1.53521779e-03, -1.38291519e-03],]
+  )  
+  torch.testing.assert_close(actual_delta_velocity, observed_delta_velocity,rtol=1e-04,atol=1e-04)
+except:
+  print('get delta velocity broke')
+  print(observed_delta_velocity)
+#LJ        0.539134        0.110659       -0.463559
+#LJ       -0.518506        0.485016        0.053708
+#LJ        0.079372       -0.495675        0.509850
+#[[ 0.53913567  0.11065883 -0.4635602 ]
+# [-0.51850799  0.48501761  0.05370848]
+# [ 0.07937232 -0.49567643  0.50985172]]
+
