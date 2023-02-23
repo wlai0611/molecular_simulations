@@ -1,4 +1,6 @@
 import torch
+import re
+import time
 
 def interatomic_xyz_distances(coordinates):
     rows, columns = coordinates.shape
@@ -29,3 +31,23 @@ def save_trajectory(positions, trajectory_file):
     for coordinates in positions:
       outstring += "LJ "+" ".join([str(coordinate.item()) for coordinate in coordinates])+"\n"
     trajectory_file.write(outstring)
+
+def load_tensor_from_xyz(filename):
+    file     = open(filename, mode='r')
+    contents = file.read()
+    data = []
+    lines= contents.split('\n')
+    for line in lines:
+      if line.startswith('LJ'):
+        vals = re.split('\s+',line)[1:]
+        data.append([float(val) for val in vals])
+    return torch.tensor(data)
+
+def get_trajectories(coordinates):
+    trajectory = torch.rand(3,3)
+    timestamp  = str(round(time.time()))
+    filename   = f"trajectory{timestamp}.xyz"
+    file       = open(file=filename, mode='a')
+    for timestep in range(10000):
+      save_trajectory(trajectory, file)
+    return filename
