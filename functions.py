@@ -43,11 +43,27 @@ def load_tensor_from_xyz(filename):
         data.append([float(val) for val in vals])
     return torch.tensor(data)
 
-def get_trajectories(coordinates):
-    trajectory = torch.rand(3,3)
+def get_trajectories(coordinates, mass=1, timesteps=10000, delta_time=0.001):
+    num_atoms, num_dimensions = coordinates.shape
+    velocities = torch.zeros(num_atoms, num_dimensions)
+    masses     = torch.ones(num_atoms)*mass
+
     timestamp  = str(round(time.time()))
     filename   = f"trajectory{timestamp}.xyz"
     file       = open(file=filename, mode='a')
-    for timestep in range(10000):
-      save_trajectory(trajectory, file)
+    
+    xyz_distances = interatomic_xyz_distances(coordinates)
+    xyz_forces    = interatomic_xyz_forces(xyz_distances)
+
+    for timestep in range(timesteps):
+      #predictor
+      delta_velocities = get_delta_velocity(xyz_forces, masses, delta_time)      
+      velocities       +=delta_velocities
+      coordinates      +=velocities * delta_time
+      xyz_distances    = interatomic_xyz_distances(coordinates)
+      xyz_forces       = interatomic_xyz_forces(xyz_distances)
+      #corrector
+      delta_velocities = get_delta_velocity(xyz_forces, masses, delta_time)
+      velocities       +=delta_velocities
+      save_trajectory(coordinates, file)
     return filename
