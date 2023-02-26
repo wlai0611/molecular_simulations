@@ -78,3 +78,12 @@ except:
 # [-0.51850799  0.48501761  0.05370848]
 # [ 0.07937232 -0.49567643  0.50985172]]
 
+actual_potential_energy = -2.424541
+distances = torch.sum(observed_distances**2,dim=2)
+try:
+  observed_potential_energy = functions.compute_potential_energy(distances)
+  torch.testing.assert_close(actual_potential_energy, observed_potential_energy, rtol=1e-04, atol=1e-04)
+except Exception as e:
+  print('potential energy function broke')
+  print(observed_potential_energy)
+  print(e.args)

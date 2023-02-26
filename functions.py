@@ -1,7 +1,6 @@
 import torch
 import re
 import time
-import pandas as pd
 
 def interatomic_xyz_distances(coordinates):
     rows, columns = coordinates.shape
@@ -68,3 +67,12 @@ def get_trajectories(coordinates, mass=1, timesteps=10000, delta_time=0.001):
       velocities       +=delta_velocities
       save_trajectory(coordinates, file)
     return filename
+
+def potential_return(r_t,epsilon,sigma_t):
+    z = sigma_t/r_t
+    u = z*z*z
+    return -4*epsilon*u*(1-u)
+
+def compute_potential_energy(distances):
+    potentials_between_atoms = potential_return(distances,1,1)
+    return torch.sum(torch.triu(potentials_between_atoms,diagonal = 1)).item()
