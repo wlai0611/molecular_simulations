@@ -69,7 +69,7 @@ def get_trajectories(coordinates, mass=1, timesteps=10000, delta_time=0.001):
       save_trajectory(coordinates, file)
       potential_energy = compute_potential_energy(euclidean_distances)
       kinetic_energy   = compute_kinetic_energy(masses, velocities)
-      save_energies(energyfile, potential_energy, kinetic_energy)
+      save_energies(energyfile, kinetic_energy, potential_energy)
     file.close()
     energyfile.close()
     return filename
