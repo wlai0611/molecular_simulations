@@ -86,3 +86,12 @@ except Exception as e:
   print('potential energy function broke')
   print(observed_potential_energy)
   print(e.args)
+
+actual_kinetic_energy = 0.000026
+try:
+  observed_kinetic_energy = functions.compute_kinetic_energy(masses, observed_delta_velocity)
+  torch.testing.assert_close(actual_kinetic_energy, observed_kinetic_energy, rtol=1e-04,atol=1e-04)
+except Exception as e:
+  print(e.args)
+  print('kinetic energy functon broke')
+  print(observed_kinetic_energy)
