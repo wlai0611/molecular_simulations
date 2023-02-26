@@ -1,6 +1,7 @@
 import torch
 import re
 import time
+import pandas as pd
 
 def interatomic_xyz_distances(coordinates):
     rows, columns = coordinates.shape
