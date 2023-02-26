@@ -16,7 +16,7 @@ def interatomic_xyz_forces(xyz_distances):
     rows, columns = squared_euclidean_distances.shape
     gradients = gradient_return(r_t=squared_euclidean_distances+torch.eye(rows,rows),epsilon=1,sigma_t=1) #adding torch.eye avoids division by 0
     gradients = gradients - torch.diag(torch.diag(gradients))                     #make the diagonal 0s again
-    return torch.sum(xyz_distances * torch.reshape(gradients,shape=(rows,columns,1)),dim=0)
+    return squared_euclidean_distances, torch.sum(xyz_distances * torch.reshape(gradients,shape=(rows,columns,1)),dim=0)
 
 def get_delta_velocity(forces, masses, delta_time):
     '''
@@ -53,7 +53,7 @@ def get_trajectories(coordinates, mass=1, timesteps=10000, delta_time=0.001):
     file       = open(file=filename, mode='a')
     
     xyz_distances = interatomic_xyz_distances(coordinates)
-    xyz_forces    = interatomic_xyz_forces(xyz_distances)
+    euclidean_distances, xyz_forces    = interatomic_xyz_forces(xyz_distances)
 
     for timestep in range(timesteps):
       #predictor
@@ -61,7 +61,7 @@ def get_trajectories(coordinates, mass=1, timesteps=10000, delta_time=0.001):
       velocities       +=delta_velocities
       coordinates      +=velocities * delta_time
       xyz_distances    = interatomic_xyz_distances(coordinates)
-      xyz_forces       = interatomic_xyz_forces(xyz_distances)
+      euclidean_distances, xyz_forces = interatomic_xyz_forces(xyz_distances)
       #corrector
       delta_velocities = get_delta_velocity(xyz_forces, masses, delta_time)
       velocities       +=delta_velocities
