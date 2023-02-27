@@ -90,3 +90,6 @@ def compute_potential_energy(distances):
 def save_energies(file, ke, pe):
     file.write("KE "+str(ke)+"\n")
     file.write("PE "+str(pe)+"\n")
+
+def load_tensor_from_folder(folder):
+    return torch.tensor([[1],[2]])
