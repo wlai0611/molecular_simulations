@@ -1,6 +1,7 @@
 import torch
 import re
 import time
+import os
 #import pdb;pdb.set_trace()
 def interatomic_xyz_distances(coordinates):
     rows, columns = coordinates.shape
@@ -92,4 +93,14 @@ def save_energies(file, ke, pe):
     file.write("PE "+str(pe)+"\n")
 
 def load_tensor_from_folder(folder):
-    return torch.tensor([[1],[2]])
+    traj_files = os.listdir(folder)
+    number_of_timesteps = len(traj_files)
+    first_timestep   = torch.load(f"{folder}/{traj_files[0]}")
+    number_of_atoms, number_of_dimensions = first_timestep
+    big_trajectory = torch.zeros(number_of_timesteps, number_of_atoms, number_of_dimensions)
+    for timestep, filename in enumerate(traj_files):
+      fullname = f"{folder}/{filename}"
+      big_trajectory[timestep,:,:] = torch.load(fullname)
+    return big_trajectory
+
+

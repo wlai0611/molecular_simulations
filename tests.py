@@ -64,7 +64,7 @@ except:
 outfolder = functions.get_trajectories(coordinates)
 observed_trajectory = functions.load_tensor_from_folder(outfolder)
 try:
-  actual_trajectory = functions.load_tensor_from_xyz('trajectory.xyz')
+  actual_trajectory = torch.load('true_trajectory.pt')
   torch.testing.assert_close(actual_trajectory,observed_trajectory,rtol=1e-01,atol=1e-01)
 except:
   print('get trajectories function broke')
