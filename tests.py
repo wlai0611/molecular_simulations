@@ -61,10 +61,10 @@ except:
   print('get delta velocity broke')
   print(observed_delta_velocity)
 
-outfolder = functions.get_trajectories(coordinates)
-observed_trajectory = functions.load_tensor_from_folder(outfolder)
+outfilename = functions.get_trajectories(coordinates)
+observed_trajectory = functions.load_tensor_from_xyz(outfilename)
 try:
-  actual_trajectory = torch.load('true_trajectory.pt')
+  actual_trajectory = functions.load_tensor_from_xyz('trajectory.xyz')
   torch.testing.assert_close(actual_trajectory,observed_trajectory,rtol=1e-01,atol=1e-01)
 except:
   print('get trajectories function broke')
